@@ -25,7 +25,7 @@ services:
         - "traefik.http.routers.transmission.rule=Host(`pt.${DOMAIN_SWARM}`,`pt.${DOMAIN_EMERGENCY}`)"
         - "traefik.http.routers.transmission.entrypoints=websecure"
         - "traefik.http.routers.transmission.service=transmission"
-        - "traefik.http.routers.transmission.middlewares=noauth-chain@file"
+        - "traefik.http.routers.transmission.middlewares=auth,normal-chain@file"
         - "traefik.http.services.transmission.loadbalancer.server.port=9091"
         # - "traefik.tcp.routers.torrent.rule=HostSNI(`*`)"
         # - "traefik.tcp.routers.torrent.entrypoints=torrent"
@@ -34,12 +34,12 @@ services:
         - homepage.group=Application
         - homepage.name=Transmission
         - homepage.icon=transmission.png
-        - homepage.href=https://pt.${DOMAIN_SWARM}:4/
+        - homepage.href=https://pt.${DOMAIN_SWARM}:${EXTERNAL_PORT}/
         - homepage.description=PT下载器
         - homepage.siteMonitor=http://transmission:9091
         - homepage.weight=20
         - homepage.widget.type=transmission
-        - homepage.widget.url=https://pt.${DOMAIN_SWARM}:4    
+        - homepage.widget.url=https://pt.${DOMAIN_SWARM}:${EXTERNAL_PORT}    
         - homepage.widget.username=${TR_USERNAME}
         - homepage.widget.password=${TR_PASSWORD}
       mode: replicated
@@ -71,7 +71,7 @@ services:
         - "traefik.http.routers.qbittorrent.rule=Host(`qb.${DOMAIN_SWARM}`,`qb.${DOMAIN_EMERGENCY}`)"
         - "traefik.http.routers.qbittorrent.entrypoints=websecure"
         - "traefik.http.routers.qbittorrent.service=qbittorrent"
-        - "traefik.http.routers.qbittorrent.middlewares=noauth-chain@file"
+        - "traefik.http.routers.qbittorrent.middlewares=auth,normal-chain@file"
         - "traefik.http.services.qbittorrent.loadbalancer.server.port=8080"
         # - "traefik.tcp.routers.qb_pt.rule=HostSNI(`*`)"
         # - "traefik.tcp.routers.qb_pt.entrypoints=qb_pt"
@@ -80,12 +80,12 @@ services:
         - homepage.group=Application
         - homepage.name=Qbittorrent
         - homepage.icon=qbittorrent.png
-        - homepage.href=https://qb.${DOMAIN_SWARM}:4/
+        - homepage.href=https://qb.${DOMAIN_SWARM}:${EXTERNAL_PORT}/
         - homepage.description=PT下载器
         - homepage.siteMonitor=http://qbittorrent:8080
         - homepage.weight=21
         - homepage.widget.type=qbittorrent
-        - homepage.widget.url=https://pt.${DOMAIN_SWARM}:4    
+        - homepage.widget.url=https://pt.${DOMAIN_SWARM}:${EXTERNAL_PORT}    
         - homepage.widget.username=${QB_USERNAME}
         - homepage.widget.password=${QB_PASSWORD}
       mode: replicated
@@ -112,12 +112,12 @@ services:
   #       - "traefik.http.routers.iyuu.rule=Host(`iyuu.${DOMAIN_SWARM}`)"
   #       - "traefik.http.routers.iyuu.entrypoints=websecure"
   #       - "traefik.http.routers.iyuu.service=iyuu"
-  #       - "traefik.http.routers.iyuu.middlewares=noauth-chain@file"
+  #       - "traefik.http.routers.iyuu.middlewares=normal-chain@file"
   #       - "traefik.http.services.iyuu.loadbalancer.server.port=8787"  
   #       - homepage.group=Application
   #       - homepage.name=IYUU
   #       - homepage.icon=transmission.png
-  #       - homepage.href=https://iyuu.${DOMAIN_SWARM}:4/
+  #       - homepage.href=https://iyuu.${DOMAIN_SWARM}:${EXTERNAL_PORT}/
   #       - homepage.description=PT辅种
   #       - homepage.siteMonitor=http://transmission:8787
   #       - homepage.weight=21
@@ -147,12 +147,12 @@ services:
   #       - "traefik.http.routers.baidupcs.rule=Host(`baidupcs.${DOMAIN_SWARM}`)"
   #       - "traefik.http.routers.baidupcs.entrypoints=websecure"
   #       - "traefik.http.routers.baidupcs.service=baidupcs"
-  #       - "traefik.http.routers.baidupcs.middlewares=noauth-chain@file"
+  #       - "traefik.http.routers.baidupcs.middlewares=normal-chain@file"
   #       - "traefik.http.services.baidupcs.loadbalancer.server.port=5299"
   #       - homepage.group=Application
   #       - homepage.name=BaiduPCS
   #       - homepage.icon=https://www.waylon.wang:4/images/services/baidupan.png
-  #       - homepage.href=https://baidupcs.${DOMAIN_SWARM}:4/
+  #       - homepage.href=https://baidupcs.${DOMAIN_SWARM}:${EXTERNAL_PORT}/
   #       - homepage.description=百度云盘下载器
   #       - homepage.siteMonitor=http://baidupcs:5299
   #       - homepage.weight=21        
