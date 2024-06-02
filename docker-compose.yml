@@ -48,6 +48,11 @@ services:
         constraints:
           - node.labels.type == vm
           - node.labels.download == true
+    logging:
+      driver: fluentd
+      options:
+        tag: docker.resource.transmissionn
+        fluentd-async-connect: "true"  
 
   # Qbittorrent
   qbittorrent:
