@@ -6,9 +6,18 @@ x-defines:
   service-common: &service-common-ref
     networks: [network_cluster]
     restart: on-failure
+  env-common: &env-common-ref
+    NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1,::1}
+    TZ: ${TZ:-Asia/Shanghai}    
+  env-proxy: &env-proxy-ref
+    HTTP_PROXY: ${OPENCLASH_HTTP_PROXY}
+    HTTPS_PROXY: ${OPENCLASH_HTTP_PROXY}
   deploy-common: &deploy-common-ref
     mode: replicated
     replicas: 1
+    restart_policy:
+      condition: on-failure
+      delay: 5s      
   placement-default: &placement-default-ref
     placement:
       constraints:
@@ -29,15 +38,14 @@ services:
   # Transmission下载器
   # ------------------------------------------------------------
   transmission:
-    image: chisbread/transmission:latest
     <<: *service-common-ref
+    image: chisbread/transmission:latest
     environment:
-      # 直接使用Portainer容器内的环境变量
+      <<: *env-common-ref
       PUID: ${TR_PUID}
       PGID: ${TR_PGID}
       USERNAME: ${TR_USERNAME}
       PASSWORD: ${TR_PASSWORD}
-      TZ: ${TZ}
     volumes:
       - nfs_transmission_config:/config
       - nfs_transmission_main_downloads:/media
@@ -71,21 +79,20 @@ services:
         - homepage.widget.url=https://pt.${DOMAIN_SWARM}:${EXTERNAL_PORT}
         - homepage.widget.username=${TR_USERNAME}
         - homepage.widget.password=${TR_PASSWORD}
-      <<: [*deploy-common-ref,*placement-default-ref]
+      <<: [*deploy-common-ref, *placement-default-ref]
 
   # ------------------------------------------------------------
   # Qbittorrent下载器
   # ------------------------------------------------------------
   qbittorrent:
-    image: linuxserver/qbittorrent
     <<: *service-common-ref
+    image: linuxserver/qbittorrent
     environment:
-      # 直接使用Portainer容器内的环境变量
+      <<: *env-common-ref
       PUID: ${QB_PUID}
       PGID: ${QB_PGID}
       # UMASK_SET: 022    # （可选）默认022
       # WEBUI_PORT: 4  # WEB UI 端口
-      TZ: ${TZ}
     volumes:
       - nfs_qbittorrent_config:/config
       - nfs_qbittorrent_main_downloads:/media
@@ -118,7 +125,7 @@ services:
         - homepage.widget.url=https://pt.${DOMAIN_SWARM}:${EXTERNAL_PORT}
         - homepage.widget.username=${QB_USERNAME}
         - homepage.widget.password=${QB_PASSWORD}
-      <<: [*deploy-common-ref,*placement-default-ref]
+      <<: [*deploy-common-ref, *placement-default-ref]
 
   # ------------------------------------------------------------
   # IYUU
@@ -147,7 +154,7 @@ services:
   #       - homepage.description=PT辅种
   #       - homepage.siteMonitor=http://transmission:8787
   #       - homepage.weight=21
-  #    <<: [*deploy-common-ref,*placement-default-ref]
+  #    <<: [*deploy-common-ref, *placement-default-ref]
 
   # ------------------------------------------------------------
   # BaiduPCS
@@ -179,7 +186,7 @@ services:
   #       - homepage.description=百度云盘下载器
   #       - homepage.siteMonitor=http://baidupcs:5299
   #       - homepage.weight=21
-  #    <<: [*deploy-common-ref,*placement-default-ref]
+  #    <<: [*deploy-common-ref, *placement-default-ref]
 
 networks:
   network_cluster:
