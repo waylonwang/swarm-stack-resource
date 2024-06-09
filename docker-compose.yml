@@ -181,7 +181,7 @@ services:
   #       - traefik.http.services.baidupcs.loadbalancer.server.port=5299
   #       - homepage.group=Application
   #       - homepage.name=BaiduPCS
-  #       - homepage.icon=https://www.waylon.wang:4/images/services/baidupan.png
+  #       - homepage.icon=https://www.${DOMAIN_NAS}:${EXTERNAL_PORT}/images/services/baidupan.png
   #       - homepage.href=https://baidupcs.${DOMAIN_SWARM}:${EXTERNAL_PORT}/
   #       - homepage.description=百度云盘下载器
   #       - homepage.siteMonitor=http://baidupcs:5299
