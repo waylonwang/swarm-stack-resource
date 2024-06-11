@@ -137,6 +137,7 @@ services:
     image: registry.${DOMAIN_SWARM}:${EXTERNAL_PORT}/ziggyds/iventoy:1.0.20
     cap_add:
       - CAP_SYS_ADMIN
+      - CAP_SYS_MODULE
     ports:
       - 26000:26000
       - 16000:16000
