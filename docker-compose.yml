@@ -34,10 +34,6 @@ x-defines:
   driver-media-ext: &driver-media-ext-ref
     type: nfs
     o: addr=${MEDIA_EXT_SERVER},rw,nfsvers=4
-  driver-iso: &driver-iso-ref
-    type: nfs
-    o: addr=${ISO_DEVICE},rw,nfsvers=4
-
 
 services:
   # ------------------------------------------------------------
@@ -303,8 +299,8 @@ volumes:
   nfs_iventoy_iso:
     driver: local
     driver_opts:
-      <<: *driver-iso-ref
-      device: :${DOWNLOAD_DEVICE}/iso      
+      <<: *driver-common-ref
+      device: :${ISO_DEVICE}/iso      
   nfs_iventoy_config:
     driver: local
     driver_opts:
