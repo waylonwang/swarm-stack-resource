@@ -28,12 +28,16 @@ x-defines:
   driver-common: &driver-common-ref
     type: nfs
     o: addr=${NFS_SERVER},rw,nfsvers=4
-  driver-media-main-ref: &driver-media-main-ref
+  driver-media-main: &driver-media-main-ref
     type: nfs
     o: addr=${MEDIA_SERVER},rw,nfsvers=4
-  driver-media-ext-ref: &driver-media-ext-ref
+  driver-media-ext: &driver-media-ext-ref
     type: nfs
     o: addr=${MEDIA_EXT_SERVER},rw,nfsvers=4
+  driver-iso: &driver-iso-ref
+    type: nfs
+    o: addr=${ISO_DEVICE},rw,nfsvers=4
+
 
 services:
   # ------------------------------------------------------------
@@ -129,6 +133,46 @@ services:
         - homepage.widget.password=${QB_PASSWORD}
       <<: [*deploy-common-ref, *placement-default-ref]
 
+  # ------------------------------------------------------------
+  # iVentoy远程引导系统
+  # ------------------------------------------------------------
+  iventoy:
+    <<: *service-common-ref
+    image: ziggyds/iventoy:1.0.20
+    ports:
+      - 26000:26000
+      - 16000:16000
+      - 10809:10809
+      - 67:67/udp
+      - 69:69/udp
+    environment:
+      <<: *env-common-ref
+      AUTO_START_PXE: "true" # optional, true by default
+    volumes:
+      - nfs_iventoy_iso:/app/iso
+      - nfs_iventoy_config:/app/data
+      - nfs_iventoy_log:/app/log
+    logging:
+      driver: fluentd
+      options:
+        tag: docker.resource.iventoy
+        fluentd-async-connect: "true"
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.iventoy.rule=Host(`iventoy.${DOMAIN_SWARM}`,`nocoiventoybase.${DOMAIN_EMERGENCY}`)
+        - traefik.http.routers.iventoy.entrypoints=websecure
+        - traefik.http.routers.iventoy.service=iventoy
+        - traefik.http.routers.iventoy.middlewares=auth,normal-chain@file
+        - traefik.http.services.iventoy.loadbalancer.server.port=26000
+        - homepage.group=Application
+        - homepage.name=iVentoy
+        - homepage.icon=iventoy.png
+        - homepage.href=https://iventoy.${DOMAIN_SWARM}:${EXTERNAL_PORT}/
+        - homepage.description=iVentoy远程引导系统
+        - homepage.siteMonitor=http://iventoy:26000
+        - homepage.weight=20
+      <<: [*deploy-common-ref, *placement-default-ref]
   # ------------------------------------------------------------
   # IYUU
   # ------------------------------------------------------------
@@ -256,4 +300,19 @@ volumes:
     driver_opts:
       <<: *driver-common-ref
       device: :${DOWNLOAD_DEVICE}/baidupcs
+  nfs_iventoy_iso:
+    driver: local
+    driver_opts:
+      <<: *driver-iso-ref
+      device: :${DOWNLOAD_DEVICE}/iso      
+  nfs_iventoy_config:
+    driver: local
+    driver_opts:
+      <<: *driver-common-ref
+      device: :${NFS_DEVICE}/resource/iventoy/config
+  nfs_iventoy_log:
+    driver: local
+    driver_opts:
+      <<: *driver-common-ref
+      device: :${NFS_DEVICE}/resource/iventoy/log
 ...
