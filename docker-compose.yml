@@ -300,7 +300,7 @@ volumes:
     driver: local
     driver_opts:
       <<: *driver-common-ref
-      device: :${ISO_DEVICE}/iso      
+      device: :${ISO_DEVICE}/iso/template/iso
   nfs_iventoy_config:
     driver: local
     driver_opts:
