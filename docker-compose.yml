@@ -41,6 +41,7 @@ services:
   # ------------------------------------------------------------
   transmission:
     <<: *service-common-ref
+    # image-ref: chisbread/transmission:version-3.00-r13.1
     image: registry.${DOMAIN_SWARM}:${EXTERNAL_PORT}/chisbread/transmission:version-3.00-r13.1
     environment:
       <<: *env-common-ref
@@ -88,6 +89,7 @@ services:
   # ------------------------------------------------------------
   qbittorrent:
     <<: *service-common-ref
+    # image-ref: linuxserver/qbittorrent:4.6.5
     image: registry.${DOMAIN_SWARM}:${EXTERNAL_PORT}/linuxserver/qbittorrent:4.6.5
     environment:
       <<: *env-common-ref
