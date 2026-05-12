@@ -54,11 +54,11 @@ services:
       - nfs_transmission_main_downloads:/media
       - nfs_transmission_ext_downloads:/media_ext
       - nfs_transmission_watch:/watch
-    logging:
-      driver: fluentd
-      options:
-        tag: docker.resource.transmissionn
-        fluentd-async-connect: "true"
+    # logging:
+    #   driver: fluentd
+    #   options:
+    #     tag: docker.resource.transmissionn
+    #     fluentd-async-connect: "true"
     deploy:
       labels:
         - traefik.enable=true
@@ -101,11 +101,11 @@ services:
       - nfs_qbittorrent_config:/config
       - nfs_qbittorrent_main_downloads:/media
       - nfs_qbittorrent_ext_downloads:/media_ext
-    logging:
-      driver: fluentd
-      options:
-        tag: docker.resource.qbittorrent
-        fluentd-async-connect: "true"
+    # logging:
+    #   driver: fluentd
+    #   options:
+    #     tag: docker.resource.qbittorrent
+    #     fluentd-async-connect: "true"
     deploy:
       labels:
         - traefik.enable=true
